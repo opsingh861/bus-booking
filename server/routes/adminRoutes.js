@@ -7,7 +7,7 @@ router.get('/', (req, res) => {
     res.send('Welcome to the admin route');
 });
 
-router.post('/addBus', adminController.addBus);
+router.post('/addBus', adminController.addBus); 
 // router.post('/addStop', adminController.addStop);
 // router.post('/addSeat', adminController.addSeat);
 

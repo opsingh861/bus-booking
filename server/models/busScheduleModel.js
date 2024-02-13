@@ -1,16 +1,15 @@
 import mongoose from 'mongoose';
 
-const seatSchema = new mongoose.Schema({
-    seatNumber: { type: Number, required: true },
-    isBooked: { type: Boolean, default: false }
-});
-
 const scheduleSchema = new mongoose.Schema({
-    date: { type: Date },
-    seats: [seatSchema]
+    date: { type: Date, required: true },
+    seats: [{
+        seatNumber: { type: Number, required: true },
+        isBooked: { type: Boolean, default: false }
+    }]
 });
 
 const busScheduleSchema = new mongoose.Schema({
+    busNumber: { type: String, required: true, unique: true },
     schedule: [scheduleSchema]
 });
 

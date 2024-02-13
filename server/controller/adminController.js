@@ -1,4 +1,4 @@
-import Bus from '../models/busScheduleModel.js';
+import Bus from '../models/busModel.js';
 import BusSchedule from '../models/busScheduleModel.js';
 
 export const addBus = async (req, res) => {
@@ -22,32 +22,30 @@ export const addBus = async (req, res) => {
         }
 
         // Create a new bus
-        const bus = new Bus({
+        const newBus = new Bus({
             busNumber,
             busName,
             totalSeats,
             availableDays
         });
 
-        // Create a new bus schedule
-        const busSchedule = new BusSchedule({
+        // Create a new bus schedule with the provided busNumber
+        const newBusSchedule = new BusSchedule({
+            busNumber,
             schedule: []
         });
 
-        // Save the bus schedule
-
-        await busSchedule.save();
+        // Save the new bus schedule
+        await newBusSchedule.save();
 
         // Assign the bus schedule to the bus
-        bus.seatingPlan = busSchedule._id;
+        newBus.seatingPlan = newBusSchedule._id;
 
-        // Save the bus
-
-        await bus.save();
+        // Save the new bus
+        await newBus.save();
 
         res.status(201).json({ message: 'Bus added successfully' });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
-
