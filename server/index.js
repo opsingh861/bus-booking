@@ -2,14 +2,20 @@ import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import cors from 'cors';
-// import authRoutes from './routes/authRoutes.js';
+import authRoutes from './routes/authRoute.js'; 
+import adminRoutes from './routes/adminRoutes.js';
 
 dotenv.config();
 const app = express();
 
-app.use(cors);
-// app.use('/api/auth', authRoutes);
+app.use(express.json());
+app.use(cors());
+app.get('/', (req, res) => {
+    res.send('Welcome to the server');
+});
 
+app.use('/api/auth', authRoutes);
+app.use('/api/admin', adminRoutes); // 
 
 const connectDb = async () => {
     try {
@@ -19,12 +25,13 @@ const connectDb = async () => {
         console.error(error);
     }
 };
+
 const startServer = async () => {
     try {
         await connectDb();
-        app.listen(8081, () => {
-            console.log('Server running on port 8081');
-        })
+        app.listen(8080, () => {
+            console.log('Server running on port 8080');
+        });
     } catch (error) {
         console.error(error);
     }
