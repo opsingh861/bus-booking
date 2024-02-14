@@ -17,7 +17,7 @@ export default function Login() {
     const handleSelect = (e) => {
         setRole(e.target.value)
     }
-    const onClick
+
     const onSubmit = async (e) => {
         e.preventDefault()
         try {
