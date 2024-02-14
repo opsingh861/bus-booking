@@ -17,7 +17,7 @@ export default function Login() {
     const handleSelect = (e) => {
         setRole(e.target.value)
     }
-
+    const onClick
     const onSubmit = async (e) => {
         e.preventDefault()
         try {
@@ -49,8 +49,10 @@ export default function Login() {
 
                 if (response.status === 200) {
                     toast({
+
                         title: "User logged in successfully"
                     })
+                    router.push("/user");
                 } else {
                     toast({
                         title: "Uh oh! Something went wrong.",
