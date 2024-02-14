@@ -9,7 +9,6 @@ const stopSchema = new mongoose.Schema({
 });
 
 
-
 const busSchema = new mongoose.Schema({
     busNumber: { type: String, required: true, unique: true }, // Unique bus number, we can give the number plate of the bus
     busName: { type: String, required: true },
