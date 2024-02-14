@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 const axiosInstance = axios.create({
-    baseURL: 'https://busbuzz.onrender.com',
+    baseURL: 'https://busbuzz.onrender.com/api',
     timeout: 1000,
     headers: {
         'Content-Type': 'application/json',
