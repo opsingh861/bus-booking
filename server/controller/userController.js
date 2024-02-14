@@ -19,6 +19,11 @@ export const browseAvailableBuses = async (req, res) => {
             console.log(distance);
             const travelTime = bus.stops[destinationIndex].travelTimeTillNow - bus.stops[sourceIndex].travelTimeTillNow;
             console.log(travelTime);
+            const occupancy = bus.currentOccupancy;
+            console.log(occupancy);
+            const totalSeats = bus.totalSeats;
+            console.log(totalSeats);
+            
             const speed = distance / travelTime;
             const timeToReachDestination = distance / speed; // in minutes
             const eta = new Date(Date.now() + timeToReachDestination * 60000).toLocaleTimeString();
