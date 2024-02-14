@@ -127,11 +127,7 @@ export const getSittingPlan = async (req, res) => {
 
 export const bookSeat = async (req, res) => {
     try {
-        const { busNumber, date, seatNumber } = req.query;
-        console.log(busNumber, date, seatNumber);
-        if (!busNumber || !date || !seatNumber) {
-            return res.status(400).json({ message: 'Bus number, date and seat number are required', success: false });
-        }
+        const { busNumber, date, seatNumber } = req.body;
 
         const bus = await Bus.findOne({ busNumber });
         if (!bus) {
@@ -169,7 +165,7 @@ export const bookSeat = async (req, res) => {
 
 export const cancelBooking = async (req, res) => {
     try {
-        const { busNumber, date, seatNumber } = req.query;
+        const { busNumber, date, seatNumber } = req.body;
         if (!busNumber || !date || !seatNumber) {
             return res.status(400).json({ message: 'Bus number, date and seat number are required', success: false });
         }
@@ -192,7 +188,7 @@ export const cancelBooking = async (req, res) => {
                     return res.status(404).json({ message: 'Seat not found', success: false });
                 }
                 if (!seat.isBooked) {
-                    return res.status(400).json({ message: 'Seat not booked', success: false });
+                    return res.status(400).json({ message: 'Seat is already not booked', success: false });
                 }
                 seat.isBooked = false;
                 await scheduleReq.save();
