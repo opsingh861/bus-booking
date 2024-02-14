@@ -8,7 +8,7 @@ router.get('/', (req, res) => {
 });
 
 router.post('/addBus', adminController.addBus); 
-// router.post('/addStop', adminController.addStop);
-// router.post('/addSeat', adminController.addSeat);
+router.post('/addStop', adminController.addStop);
+router.post('/addSeat', adminController.addSeat);
 
 export default router;

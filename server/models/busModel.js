@@ -4,9 +4,8 @@ import mongoose from 'mongoose';
 const stopSchema = new mongoose.Schema({
     location: { type: String, required: true },
     sequence: { type: Number, required: true },
-    distanceFromPreviousStop: { type: Number, required: true }, // Distance from the previous stop
-    travelTimeFromPreviousStop: { type: Number, required: true }, // Travel time from the previous stop in minutes
-    eta: { type: Date, required: true } // Estimated Time of Arrival
+    distanceTillNow: { type: Number, required: true }, // Distance from initial point till this stop in km
+    travelTimeTillNow: { type: Number, required: true } // Travel time from initial point till this stop in minutes
 });
 
 
