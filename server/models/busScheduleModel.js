@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 const scheduleSchema = new mongoose.Schema({
-    date: { type: Date, required: true },
+    date: { type: String, required: true },
     seats: [{
         seatNumber: { type: Number, required: true },
         isBooked: { type: Boolean, default: false }

@@ -45,7 +45,7 @@ export const addBus = async (req, res) => {
         // Save the new bus
         await newBus.save();
 
-        res.status(201).json({ message: 'Bus added successfully' });
+        res.status(201).json({ message: 'Bus added successfully', success: true});
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -55,9 +55,7 @@ export const addStop = async (req, res) => {
 
     try {
         let { busNumber, location, sequence, distanceFromPreviousStop, travelTimeFromPreviousStop } = req.body;
-        if (!busNumber || !location || !sequence || !distanceFromPreviousStop || !travelTimeFromPreviousStop) {
-            return res.status(400).json({ message: 'All fields are required', success: false });
-        }
+
         busNumber = busNumber.toLowerCase();
         const bus = await Bus.findOne({ busNumber });
         if (!bus) {
@@ -79,7 +77,7 @@ export const addStop = async (req, res) => {
         };
         bus.stops.push(newStop);
         await bus.save();
-        res.status(201).json({ message: 'Stop added successfully' });
+        res.status(201).json({ message: 'Stop added successfully', success: true });
     }
     catch (error) {
         res.status(500).json({ error: error.message });
@@ -106,12 +104,15 @@ export const addSeat = async (req, res) => {
         if (!bus) {
             return res.status(404).json({ message: 'Bus not found', success: false });
         }
-        // const schedule_id = bus.seatingPlan;
-        const busSchedule = await BusSchedule.findOne({ busNumber});
+
+        // Parse the date string into a Date object
+
+        const busSchedule = await BusSchedule.findOne({ busNumber });
         // console.log(busSchedule);
 
-       let scheduleList = busSchedule.schedule;
-        console.log(scheduleList);
+
+        let scheduleList = busSchedule.schedule;
+        // console.log(scheduleList);
         let dateIndex = -1;
         for (let i = 0; i < scheduleList.length; i++) {
             if (scheduleList[i].date === date) {
@@ -121,13 +122,22 @@ export const addSeat = async (req, res) => {
         }
         if (dateIndex === -1) {
             // iterate and create seat array equal to the total seats in the bus
-            
-            let seats = [];
 
-            scheduleList.push({ date, seats: [] });
+            let seats = [];
+            for (let i = 0; i < bus.totalSeats; i++) {
+                seats.push({ seatNumber: i + 1, isBooked: false });
+            }
+
+            scheduleList.push({ date, seats: seats });
             dateIndex = scheduleList.length - 1;
         }
-        
+        let seats = scheduleList[dateIndex].seats;
+        let seatIndex = seatNumber - 1;
+        if (seats[seatIndex].isBooked) {
+            return res.status(400).json({ message: 'Seat already booked', success: false });
+        }
+        seats[seatIndex].isBooked = true;
+        await busSchedule.save();
 
         res.status(200).json({ message: 'Seat marked as booked successfully', success: true });
     } catch (error) {

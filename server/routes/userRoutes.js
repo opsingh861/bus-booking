@@ -9,5 +9,8 @@ router.get('/', (req, res) => {
 
 router.get('/browseAvailableBuses', userController.browseAvailableBuses);
 router.get('/getBusDetails', userController.getBusDetails);
+router.get('/getSittingPlan', userController.getSittingPlan);
+router.post('/bookSeat', userController.bookSeat);
+router.post('/cancelBooking', userController.cancelBooking);
 
 export default router;
