@@ -51,7 +51,7 @@ export const signup = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
         const user = new User({ name, username, password: hashedPassword, role });
         await user.save();
-        res.status(201).json({ message: 'User signed up successfully' });
+        res.status(201).json({ message: 'User signed up successfully', success: true });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -75,7 +75,7 @@ export const loginUser = async (req, res) => {
             return res.status(401).json({ message: 'Invalid username or password', success: false });
         }
         const token = authService.generateToken(user);
-        res.status(200).json({ token });
+        res.status(200).json({ token, success: true });
     } catch (error) {
         console.log(error);
         res.status(500).json({ error: error.message });
@@ -101,7 +101,7 @@ export const loginAdmin = async (req, res) => {
             return res.status(401).json({ message: 'Invalid username or password', success: false });
         }
         const token = authService.generateToken(user);
-        res.status(200).json({ token });
+        res.status(200).json({ token, success: true });
     } catch (error) {
         console.log(error);
         res.status(500).json({ error: error.message });

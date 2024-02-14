@@ -2,9 +2,16 @@ import Bus from '../models/busModel.js';
 
 export const browseAvailableBuses = async (req, res) => {
     try {
-        const { source, destination } = req.query;
-
+        let { source, destination, day } = req.query;
+        if (!source || !destination) {
+            return res.status(400).json({ message: 'Source and destination are required', success: false });
+        }
+        if (source === destination) {
+            return res.status(400).json({ message: 'Source and destination cannot be the same', success: false });
+        }
         // Query the database for buses that cover the specified route
+        source = source.toLowerCase();
+        destination = destination.toLowerCase();
         const buses = await Bus.find({
             'stops.location': { $all: [source, destination] }
         });
@@ -12,18 +19,27 @@ export const browseAvailableBuses = async (req, res) => {
         // Calculate distance and ETA for each bus 
         const busesWithInfo = buses.map(bus => {
             const sourceIndex = bus.stops.findIndex(stop => stop.location === source);
-            console.log(bus.stops[sourceIndex]);
-            const destinationIndex = bus.stops.findIndex(stop => stop.location === destination);
-            console.log(bus.stops[destinationIndex]);
-            const distance = bus.stops[destinationIndex].distanceTillNow - bus.stops[sourceIndex].distanceTillNow;
-            console.log(distance);
-            const travelTime = bus.stops[destinationIndex].travelTimeTillNow - bus.stops[sourceIndex].travelTimeTillNow;
-            console.log(travelTime);
+
+            const destinationIndex = bus.stops.findIndex(stop => stop.location === destination); // we are checking if source is behind destination in the sequence
+
+            if (bus.stops[sourceIndex].sequence > bus.stops[destinationIndex].sequence) { // right now we are not considering for the bus coming back to initial stop
+                return res.status(404).json({ message: 'Bus not found', success: false });
+            }
+            
+            if (bus.availableDays.indexOf(day) === -1) { // checking if the bus is available on the specified day
+                return res.status(404).json({ message: 'Bus not found', success: false });
+            }
+
+            let distance = bus.stops[destinationIndex].distanceTillNow - bus.stops[sourceIndex].distanceTillNow;
+            distance = Math.abs(distance);
+            let travelTime = bus.stops[destinationIndex].travelTimeTillNow - bus.stops[sourceIndex].travelTimeTillNow;
+            travelTime = Math.abs(travelTime);
             const occupancy = bus.currentOccupancy;
-            console.log(occupancy);
             const totalSeats = bus.totalSeats;
             console.log(totalSeats);
-            
+            const percentageOccupancy = (occupancy / totalSeats) * 100;
+
+
             const speed = distance / travelTime;
             const timeToReachDestination = distance / speed; // in minutes
             const eta = new Date(Date.now() + timeToReachDestination * 60000).toLocaleTimeString();
@@ -32,7 +48,8 @@ export const browseAvailableBuses = async (req, res) => {
                 busName: bus.busName,
                 distance,
                 travelTime,
-                eta
+                eta,
+                percentageOccupancy
             };
 
         });
@@ -40,6 +57,30 @@ export const browseAvailableBuses = async (req, res) => {
         res.status(200).json({
             message: 'Available buses retrieved successfully',
             buses: busesWithInfo
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+export const getBusDetails = async (req, res) => {
+    try {
+        let { busNumber } = req.query;
+        if (!busNumber) {
+            return res.status(400).json({ message: 'Bus number is required', success: false });
+        }
+        // Query the database for the specified bus
+        busNumber = busNumber.toLowerCase();
+        const bus = await Bus.findOne({ busNumber });
+
+        // If bus not found, return error
+        if (!bus) {
+            return res.status(404).json({ message: 'Bus not found', success: false });
+        }
+
+        res.status(200).json({
+            message: 'Bus details retrieved successfully',
+            bus
         });
     } catch (error) {
         res.status(500).json({ error: error.message });

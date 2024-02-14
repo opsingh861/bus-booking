@@ -8,5 +8,6 @@ router.get('/', (req, res) => {
 });
 
 router.get('/browseAvailableBuses', userController.browseAvailableBuses);
+router.get('/getBusDetails', userController.getBusDetails);
 
 export default router;
