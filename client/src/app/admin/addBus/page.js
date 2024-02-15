@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation"
 function AddBus() {
     const router = useRouter()
     const { toast } = useToast()
+    const { query } = router
 
     const [busNumber, setBusNumber] = useState("")
     const [busName, setBusName] = useState("")
@@ -28,13 +29,11 @@ function AddBus() {
                 availableDays: availableDays
             })
 
-            console.log(response)
-            
             if (response.data.success === true) {
                 toast({
                     title: "Bus added successfully"
                 })
-                router.push("/admin/addBus")
+                router.push(`/admin/addStop?busNumber=${busNumber}`)
             } else {
                 toast({
                     title: "Uh oh! Something went wrong.",
