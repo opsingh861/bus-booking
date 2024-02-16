@@ -45,7 +45,7 @@ export const addBus = async (req, res) => {
         // Save the new bus
         await newBus.save();
 
-        res.status(201).json({ message: 'Bus added successfully', success: true});
+        res.status(201).json({ message: 'Bus added successfully', success: true });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

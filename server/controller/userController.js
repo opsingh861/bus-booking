@@ -52,7 +52,7 @@ export const browseAvailableBuses = async (req, res) => {
                 eta,
                 percentageOccupancy
             };
-
+            
         });
 
         res.status(200).json({
