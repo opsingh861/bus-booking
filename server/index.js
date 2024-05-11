@@ -2,21 +2,21 @@ import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import authRoutes from './routes/authRoute.js'; 
+import authRoutes from './routes/authRoute.js';
 import adminRoutes from './routes/adminRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 
 dotenv.config();
 const app = express();
-
 app.use(express.json());
 app.use(cors());
+
 app.get('/', (req, res) => {
     res.send('Welcome to the server');
 });
 
-app.use('/api/auth', authRoutes); // 
-app.use('/api/admin', adminRoutes); // 
+app.use('/api/auth', authRoutes); 
+app.use('/api/admin', adminRoutes); 
 app.use('/api/user', userRoutes);
 
 const connectDb = async () => {
